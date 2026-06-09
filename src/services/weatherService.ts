@@ -31,4 +31,16 @@ export class WeatherService {
             console.error(error);
         }
     }
+
+    static async fetchForecast(city: string) {
+        try {
+            const response = await fetch(
+                new URL(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`)
+            );
+            const json = await response.json();
+            console.log(json);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
