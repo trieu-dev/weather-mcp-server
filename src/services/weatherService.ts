@@ -83,29 +83,23 @@ export async function fetchCurrentWeather(city: string): Promise<WeatherData|nul
   }
 }
 
-export class WeatherService {
-    static async fetchCurrentWeather(city: string) {
-        try {
-            const response = await fetch(
-                new URL(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`)
-            );
-            const json = await response.json();
-            const value = json as WeatherData;
-            console.log(value);
-        } catch (error) {
-            console.error(error);
-        }
-    }
+export async function fetchForecast<T>(city: string): Promise<T | null> {
+  // Normalize city name
+  let queryCity = city;
+  if (["ho chi minh city", "ho chi minh", "hcmc"].includes(city.toLowerCase())) {
+    queryCity = "Saigon";
+  }
 
-    static async fetchForecast(city: string) {
-        try {
-            const response = await fetch(
-                new URL(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`)
-            );
-            const json = await response.json();
-            console.log(json);
-        } catch (error) {
-            console.error(error);
-        }
+  try {
+     const response = await fetch(
+          new URL(`https://api.openweathermap.org/data/2.5/forecast?q=${queryCity}&appid=${API_KEY}&units=metric`)
+      );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error("Error making NWS request:", error);
+    return null;
+  }
 }
