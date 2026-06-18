@@ -60,15 +60,23 @@ interface AlertsResponse {
   features: AlertFeature[];
 }
 
-export async function fetchCurrentWeather<T>(city: string): Promise<T | null> {
+export async function fetchCurrentWeather(city: string): Promise<WeatherData|null> {
+  // Normalize city name
+  let queryCity = city;
+  if (["ho chi minh city", "ho chi minh", "hcmc"].includes(city.toLowerCase())) {
+    queryCity = "Saigon";
+  }
+
   try {
     const response = await fetch(
-        new URL(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`)
+        new URL(`https://api.openweathermap.org/data/2.5/weather?q=${queryCity}&appid=${API_KEY}&units=metric`)
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return (await response.json()) as T;
+    const json = await response.json();
+    const value = json as WeatherData;
+    return value;
   } catch (error) {
     console.error("Error making NWS request:", error);
     return null;
