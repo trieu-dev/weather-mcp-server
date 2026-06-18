@@ -6,12 +6,18 @@ interface WeatherData {
     dt?: Date,
     name: string,
     id: string,
-    main: MainWeatherData
+    main: MainWeatherData,
+    wind: WindData,
 }
 
 interface MainWeatherData {
     temp: number,
     humidity: number,
+}
+
+interface WindData {
+    speed: number,
+    deg: number,
 }
 
 interface ForecastData {
